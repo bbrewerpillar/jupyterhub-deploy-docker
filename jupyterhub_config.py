@@ -3,6 +3,7 @@
 
 # Configuration file for JupyterHub
 import os
+import socket
 
 c = get_config()
 
@@ -36,14 +37,13 @@ c.DockerSpawner.notebook_dir = notebook_dir
 # Mount the real user's Docker volume on the host to the notebook user's
 # notebook directory in the container
 c.DockerSpawner.volumes = { 'jupyterhub-user-{username}': notebook_dir }
-c.DockerSpawner.extra_create_kwargs.update({ 'volume_driver': 'local' })
 # Remove containers once they are stopped
 c.DockerSpawner.remove_containers = True
 # For debugging arguments passed to spawned containers
 c.DockerSpawner.debug = True
 
 # User containers will access hub by container name on the Docker network
-c.JupyterHub.hub_ip = 'jupyterhub'
+c.JupyterHub.hub_ip = c.JupyterHub.hub_ip = socket.gethostbyname(socket.gethostname())
 c.JupyterHub.hub_port = 8080
 
 # TLS config
